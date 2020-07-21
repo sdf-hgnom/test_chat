@@ -41,6 +41,9 @@ class ChatWindow(QtWidgets.QMainWindow):
         self.ui.lineEdit.clear()
         self.ui.plainTextEdit.appendPlainText(message)
 
+    def exit_button_click(self):
+        self.close()
+
     def setup_events(self):
         self.ui.pushButton.clicked.connect(self.button_click)
 

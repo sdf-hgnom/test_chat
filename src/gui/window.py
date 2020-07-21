@@ -32,6 +32,10 @@ class Window(object):
         self.pushButton.setToolTip("")
         self.pushButton.setObjectName("pushButton")
         self.verticalLayout.addWidget(self.pushButton)
+        self.exitButton = QtWidgets.QPushButton(self.centralwidget)
+        self.exitButton.setToolTip("")
+        self.exitButton.setObjectName("exitButton")
+        self.verticalLayout.addWidget(self.exitButton)
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -47,3 +51,6 @@ class Window(object):
                                                     "Ваше сообщение".encode(encoding='utf8')))
         self.pushButton.setText(_translate("MainWindow",
                                            "Послать сообщение".encode(encoding='utf8')))
+        self.exitButton.setText(_translate("MainWindow",
+                                           "Выход".encode(encoding='utf8')))
+
