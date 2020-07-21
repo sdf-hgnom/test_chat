@@ -6,8 +6,6 @@ from twisted.internet.protocol import ServerFactory, connectionDone
 from twisted.protocols.basic import LineOnlyReceiver
 
 
-
-
 class Handler(LineOnlyReceiver):
     factory: 'Server'
     login: str
@@ -63,13 +61,13 @@ class Server(ServerFactory):
     clients: list
     history: deque
 
-    def get_logins(self):
-        current_logins = []
+    def get_logins(self) -> list:
+        current_users = []
         for user in self.clients:
-            current_logins.append(user.login)
-        return current_logins
+            current_users.append(user.login)
+        return current_users
 
-    def startFactory(self):
+    def startFactory(self) -> None:
         print('Start Server ......')
 
     def __init__(self) -> None:
@@ -77,8 +75,8 @@ class Server(ServerFactory):
         self.history = deque(maxlen=100)
 
 
-def run_server(what_port: int):
-    server = Server()
+def run_server(what_port: int) -> None:
+    server: Server = Server()
     reactor.listenTCP(what_port, server)
     reactor.run()
 
