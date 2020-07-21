@@ -2,7 +2,7 @@ from PyQt5 import QtWidgets
 from twisted.internet.protocol import ClientFactory
 from twisted.protocols.basic import LineOnlyReceiver
 from src.gui.window import Window
-
+import sys
 
 # from .settings import TCP_PORT
 
@@ -42,10 +42,15 @@ class ChatWindow(QtWidgets.QMainWindow):
         self.ui.plainTextEdit.appendPlainText(message)
 
     def exit_button_click(self):
-        self.close()
+        quit()
 
     def setup_events(self):
         self.ui.pushButton.clicked.connect(self.button_click)
+        self.ui.exitButton.clicked.connect(self.exit_button_click)
+
+
+def quit():
+    sys.exit()
 
 
 def main():
