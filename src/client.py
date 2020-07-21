@@ -1,5 +1,9 @@
+from PyQt5 import QtWidgets
 from twisted.internet.protocol import ClientFactory
 from twisted.protocols.basic import LineOnlyReceiver
+from .gui import window as win
+import sys
+
 
 # from .settings import TCP_PORT
 
@@ -22,9 +26,21 @@ class Connector(ClientFactory):
     pass
 
 
-class ChatWindow:
+class ChatWindow(QtWidgets.QMainWindow):
     protocol: ConnectorProtocol
     reactor = None
+    ui:win.Window
 
+    def __init__(self):
+        super().__init__()
+        self.ui = win.Window()
+        self.ui.setupUi(self)
+
+def main():
+    app = QtWidgets.QApplication([])
+    application = ChatWindow()
+    application.show()
+    app.exec()
 
 if __name__ == '__main__':
+    main()
