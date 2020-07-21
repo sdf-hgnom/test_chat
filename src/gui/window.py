@@ -40,6 +40,10 @@ class Window(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.plainTextEdit.setPlaceholderText(_translate("MainWindow", "Все сообщения", "Все сообщения"))
-        self.lineEdit.setPlaceholderText(_translate("MainWindow", "Ваше сообщение"))
-        self.pushButton.setText(_translate("MainWindow", "Послать сообщение"))
+        self.plainTextEdit.setPlaceholderText(_translate("MainWindow",
+                                                         "Все сообщения".encode(encoding='utf8'),
+                                                         "Все сообщения".encode(encoding='utf8')))
+        self.lineEdit.setPlaceholderText(_translate("MainWindow",
+                                                    "Ваше сообщение".encode(encoding='utf8')))
+        self.pushButton.setText(_translate("MainWindow",
+                                           "Послать сообщение".encode(encoding='utf8')))
