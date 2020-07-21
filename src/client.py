@@ -1,8 +1,7 @@
 from PyQt5 import QtWidgets
 from twisted.internet.protocol import ClientFactory
 from twisted.protocols.basic import LineOnlyReceiver
-from .gui import window as win
-import sys
+from
 
 
 # from .settings import TCP_PORT
