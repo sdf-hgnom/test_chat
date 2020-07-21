@@ -1,8 +1,7 @@
 from twisted.internet.protocol import ClientFactory
 from twisted.protocols.basic import LineOnlyReceiver
 
-from .server import TCP_PORT
-
+from .settings import *
 
 class ConnectorProtocol(LineOnlyReceiver):
     factory: "Connector"

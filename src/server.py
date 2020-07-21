@@ -1,11 +1,11 @@
 from collections import deque
+from .settings import *
 
 from twisted.internet import reactor
 from twisted.internet.protocol import ServerFactory, connectionDone
 from twisted.protocols.basic import LineOnlyReceiver
 
-COUNT_MESSAGE_SEND_ON_LOGIN = 10
-TCP_PORT = 7410
+
 
 
 class Handler(LineOnlyReceiver):
