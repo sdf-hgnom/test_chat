@@ -1,7 +1,7 @@
 from twisted.internet.protocol import ClientFactory
 from twisted.protocols.basic import LineOnlyReceiver
 
-from .settings import TCP_PORT
+# from .settings import TCP_PORT
 
 
 class ConnectorProtocol(LineOnlyReceiver):
@@ -25,3 +25,6 @@ class Connector(ClientFactory):
 class ChatWindow:
     protocol: ConnectorProtocol
     reactor = None
+
+
+if __name__ == '__main__':
