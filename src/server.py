@@ -5,6 +5,7 @@ from twisted.internet.protocol import ServerFactory, connectionDone
 from twisted.protocols.basic import LineOnlyReceiver
 
 COUNT_MESSAGE_SEND_ON_LOGIN = 10
+TCP_PORT = 7410
 
 
 class Handler(LineOnlyReceiver):
@@ -83,4 +84,4 @@ def run_server(what_port: int):
 
 
 if __name__ == '__main__':
-    run_server(what_port=7410)
+    run_server(what_port=TCP_PORT)
