@@ -4,6 +4,7 @@
 
 # User-specific stuff:
 .idea/
+*.ui
 
 
 ### Python template
@@ -215,3 +216,4 @@ fabric.properties
 
 # Editor-based Rest Client
 .idea/httpRequests
+/src/ChatWindow.ui

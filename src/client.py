@@ -3,6 +3,7 @@ from twisted.protocols.basic import LineOnlyReceiver
 
 from .settings import TCP_PORT
 
+
 class ConnectorProtocol(LineOnlyReceiver):
     factory: "Connector"
 
