@@ -10,20 +10,138 @@ import sys
 
 from PyQt5.QtGui import QIcon
 
-from src.settings import get_init_states,save_init_states
+from src.settings import get_init_states, save_init_states
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QPlainTextEdit, QLineEdit, QGroupBox, \
-    QMessageBox, QWidget, QToolBox, QAction
-from PyQt5.QtCore import Qt, QRect
+    QMessageBox, QWidget, QToolBox, QAction, QDialog, QFormLayout, QHBoxLayout, QDialogButtonBox
+from PyQt5.QtCore import Qt, QRect, QObject
 
 
-class Window(QMainWindow):
+class Icons(QObject):
+    icon_send: QIcon = None
+    icon_exit: QIcon = None
+    icon_setup: QIcon = None
+
     def __init__(self):
-        super().__init__()
+        super(Icons, self).__init__()
         self.icon_send = QIcon('images/document-send.png')
         self.icon_exit = QIcon('images/application-exit.png')
         self.icon_setup = QIcon('images/system-run.png')
-        self.toolbox:QToolBox = None
+
+class Test(QDialog):
+    def __init__(self):
+        super().__init__()
+        self.setup_ui()
+
+    def setup_ui(self):
+        okButton = QPushButton("OK")
+        cancelButton = QPushButton("Cancel")
+
+        hbox = QHBoxLayout(self)
+        hbox.addStretch(1)
+        hbox.addWidget(okButton)
+        hbox.addWidget(cancelButton)
+
+        vbox = QVBoxLayout(self)
+        vbox.addStretch(1)
+        vbox.addLayout(hbox)
+
+        self.setLayout(vbox)
+
+
+        self.setGeometry(300, 300, 300, 150)
+        self.setWindowTitle('Buttons')
+
+
+
+        self.setLayout(vbox)
+        self.setGeometry(300, 300, 300, 150)
+
+
+
+class EditSettings(QDialog):
+    edit_host: QLineEdit
+    edit_user: QLineEdit
+    edit_port: QLineEdit
+    form: QFormLayout
+    data: dict
+    ok_button: QPushButton
+    cancel_button: QPushButton
+    group_box: QGroupBox
+
+    def __init__(self, app_icons: Icons, what_edit: dict):
+        super().__init__()
+        self.form = QFormLayout()
+        self.edit_host = QLineEdit()
+        self.edit_user = QLineEdit()
+        self.edit_port = QLineEdit()
+        self.form = QFormLayout()
+        # self.ok_button = None
+        # self.cancel_button = None
+        self.icons = app_icons
+        self.data = what_edit
+        self.setup_ui()
+
+    def setup_ui(self):
+        self.setWindowTitle('Параметры')
+        self.setWindowIcon(self.icons.icon_setup)
+        self.setModal(True)
+        self.group_box = QGroupBox('Form')
+        buttonbox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
+
+        if 'User' in self.data and  self.data['User'] and self.data['User'] != ' ':
+            self.edit_user.setText(self.data['User'])
+        if self.data['tcp_port'] and self.data['tcp_port'] != ' ':
+            self.edit_port.setText(str(self.data['tcp_port']))
+        if self.data['connect_to'] and self.data['connect_to'] != ' ':
+            self.edit_host.setText(self.data['connect_to'])
+
+        self.edit_user.setParent(self.group_box)
+        self.edit_port.setParent(self.group_box)
+        self.edit_host.setParent(self.group_box)
+
+        self.form.addRow("&User:", self.edit_user)
+        self.form.addRow("&Host:", self.edit_host)
+        self.form.addRow("&Port:", self.edit_port)
+        self.group_box.setLayout(self.form)
+        # self.form.addRow(self.ok_button)
+        # self.form.addRow(self.cancel_button)
+        main_layout = QVBoxLayout(self)
+        main_layout.addWidget(self.group_box)
+        main_layout.addWidget(buttonbox)
+        self.setLayout(main_layout)
+        # self.resize(200,200)
+
+    def get_data(self):
+        return self.data
+
+    def accept(self) -> None:
+        self.save_editors()
+        super().accept()
+
+
+    def save_editors(self) -> None:
+        user = self.edit_user.text()
+        if user and user != ' ':
+            self.data['User'] = user
+        port = self.edit_port.text()
+        if port.isdigit():
+            port = int(port)
+            self.data['tcp_port'] = port
+        host = self.edit_host.text()
+        if host and host != ' ':
+            self.data['connect_to'] = host
+
+
+
+
+class Window(QMainWindow):
+    def __init__(self, icons: Icons):
+        super().__init__()
+        self.icons = icons
+        self.toolbox: QToolBox = None
         self.centralwidget: QWidget = None
         self.exit_button: QPushButton = None
         self.send_button: QPushButton = None
@@ -31,12 +149,11 @@ class Window(QMainWindow):
         self.verticalLayout: QVBoxLayout = None
         self.line_edit: QLineEdit = None
         self.init_state = get_init_states()
-        print(self.init_state)
         self.setup_ui()
 
     def save_state(self):
         position = self.frameGeometry()
-        geometry = [position.x(),position.y(),position.height(),position.width()]
+        geometry = [position.x(), position.y(), position.height(), position.width()]
         self.init_state['client_window'] = geometry
         save_init_states()
 
@@ -54,9 +171,17 @@ class Window(QMainWindow):
         if message and message != ' ':
             self.plainTextEdit.appendPlainText(message)
             self.line_edit.clear()
+            self.line_edit.setFocus()
 
     def edit_settings(self):
-        pass
+        dialog = EditSettings(app_icons=self.icons, what_edit=self.init_state)
+        res= dialog.exec_()
+        if res:
+            self.init_state = dialog.get_data()
+        dialog.destroy()
+        self.line_edit.setFocus()
+
+
 
     def setup_ui(self):
         geometry = self.init_state['client_window']
@@ -73,12 +198,11 @@ class Window(QMainWindow):
         self.centralwidget.setSizePolicy(sizePolicy)
         self.centralwidget.setObjectName('centralwidget')
         self.send_button = QPushButton('Послать', self.centralwidget)
-        self.send_button.setIcon(self.icon_send)
+        self.send_button.setIcon(self.icons.icon_send)
         self.exit_button = QPushButton('&Выход', self.centralwidget)
-        self.exit_button.setIcon(self.icon_exit)
+        self.exit_button.setIcon(self.icons.icon_exit)
         self.plainTextEdit = QPlainTextEdit(self.centralwidget)
         self.line_edit = QLineEdit(self.centralwidget)
-
 
         self.verticalLayout = QVBoxLayout(self)
 
@@ -102,13 +226,13 @@ class Window(QMainWindow):
         self.setCentralWidget(self.centralwidget)
         self.setGeometry(qr_geometry)
         self.setWindowTitle('Тестовый Чат')
-        self.setWindowIcon(self.icon_send)
+        self.setWindowIcon(self.icons.icon_send)
         self.toolbox = QToolBox(self)
-        exit_action = QAction(self.icon_exit,'&Exit',self)
+        exit_action = QAction(self.icons.icon_exit, '&Exit', self)
         exit_action.setShortcut('Ctrl+Q')
         exit_action.setStatusTip('Exit Application')
         exit_action.triggered.connect(self.close)
-        setup_action = QAction(self.icon_setup, '&Setup', self)
+        setup_action = QAction(self.icons.icon_setup, '&Setup', self)
         setup_action.setShortcut('Ctrl+S')
         setup_action.setStatusTip('Edit Settings')
         setup_action.triggered.connect(self.edit_settings)
@@ -123,6 +247,7 @@ class Window(QMainWindow):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    window = Window()
+    icons = Icons()
+    window = Window(icons=icons)
     window.show()
     sys.exit(app.exec_())
