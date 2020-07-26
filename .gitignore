@@ -5,7 +5,7 @@
 # User-specific stuff:
 .idea/
 *.ui
-
+*.ini
 
 ### Python template
 # Byte-compiled / optimized / DLL files
@@ -217,3 +217,4 @@ fabric.properties
 # Editor-based Rest Client
 .idea/httpRequests
 /src/ChatWindow.ui
+/src/chat.ini
