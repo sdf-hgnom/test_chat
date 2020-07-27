@@ -4,7 +4,7 @@ from twisted.protocols.basic import LineOnlyReceiver
 from src.gui.window import Window
 import sys
 
-# from .settings import TCP_PORT
+from src.settings import init_states
 
 
 class ConnectorProtocol(LineOnlyReceiver):
@@ -33,20 +33,9 @@ class ChatWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.ui = Window()
-        self.ui.setupUi(self)
-        self.setup_events()
 
-    def button_click(self):
-        message = self.ui.lineEdit.text()
-        self.ui.lineEdit.clear()
-        self.ui.plainTextEdit.appendPlainText(message)
 
-    def exit_button_click(self):
-        quit()
 
-    def setup_events(self):
-        self.ui.pushButton.clicked.connect(self.button_click)
-        self.ui.exitButton.clicked.connect(self.exit_button_click)
 
 
 def quit():

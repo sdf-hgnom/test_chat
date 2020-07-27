@@ -1,14 +1,18 @@
 from collections import deque
-from .settings import *
 
 from twisted.internet import reactor
 from twisted.internet.protocol import ServerFactory, connectionDone
 from twisted.protocols.basic import LineOnlyReceiver
 
+from src.settings import get_init_states
+
+COUNT_MESSAGE_SEND_ON_LOGIN = 10
+
 
 class Handler(LineOnlyReceiver):
     factory: 'Server'
     login: str
+    init_states :dict = get_init_states()
 
     def connectionLost(self, reason=connectionDone):
         self.factory.clients.remove(self)
@@ -82,4 +86,5 @@ def run_server(what_port: int) -> None:
 
 
 if __name__ == '__main__':
-    run_server(what_port=TCP_PORT)
+    init_states: dict = get_init_states()
+    run_server(what_port=init_states['tcp_port'])
